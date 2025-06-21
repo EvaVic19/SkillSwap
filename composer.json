@@ -1,0 +1,21 @@
+{
+    "name": "vic/skillswap",
+    "description": "Aplicación para intercambiar habilidades tecnológicas entre usuarios",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Vic\\Skillswap\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "EvaVic19",
+            "email": "samotraciaj@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}
