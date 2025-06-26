@@ -1,5 +1,5 @@
 <?php 
-
+date_default_timezone_set('America/Bogota'); // o tu zona horaria real
 // Cargar Composer autoload correctamente (sube solo un nivel)
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -10,6 +10,7 @@ $action = $_GET['action'] ?? 'index';
 // Convertir a clase
 $controllerClass = ucfirst($controllerName) . 'Controller';
 $controllerFile = __DIR__ . '/../app/controllers/' . $controllerClass . '.php';
+
 
 if (file_exists($controllerFile)) {
     require_once $controllerFile;

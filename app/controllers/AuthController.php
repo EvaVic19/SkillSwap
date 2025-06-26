@@ -14,20 +14,24 @@ class AuthController
         }
     }
 
+    // ✅ Mostrar formulario de login
     public function showLogin()
     {
+        $this->safeSessionStart();
         $error = '';
         require __DIR__ . '/../../views/auth/login.php';
     }
 
+    // ✅ Procesar login con redirección por rol
     public function login()
     {
+        $this->safeSessionStart();
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $error = '';
 
         if (!$email || !$password) {
-            $error = 'Email y contraseña son requeridos.';
+            $error = 'Correo y contraseña son obligatorios.';
             require __DIR__ . '/../../views/auth/login.php';
             return;
         }
@@ -36,12 +40,16 @@ class AuthController
         $user = $userModel->getByEmail($email);
 
         if ($user && password_verify($password, $user['password'])) {
-            $this->safeSessionStart();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_role'] = $user['role'] ?? 'standard';
 
-            header("Location: index.php?controller=home&action=index");
+            // ✅ Redirigir según el rol
+            if ($_SESSION['user_role'] === 'admin') {
+                header("Location: index.php?controller=admin&action=dashboard");
+            } else {
+                header("Location: index.php?controller=home&action=index");
+            }
             exit;
         } else {
             $error = 'Credenciales incorrectas.';
@@ -49,6 +57,7 @@ class AuthController
         }
     }
 
+    // ✅ Cerrar sesión
     public function logout()
     {
         $this->safeSessionStart();
@@ -63,13 +72,17 @@ class AuthController
         exit;
     }
 
+    // ✅ Mostrar formulario de recuperación
     public function forgotPassword()
     {
         require __DIR__ . '/../../views/auth/forgot_password.php';
     }
 
+    // ✅ Enviar email con enlace de recuperación
     public function sendResetEmail()
     {
+        date_default_timezone_set('America/Bogota');
+
         $email = $_POST['email'] ?? '';
         if (empty($email)) {
             die("Correo requerido");
@@ -83,7 +96,8 @@ class AuthController
         }
 
         $token = bin2hex(random_bytes(16));
-        $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $expiry = (new DateTime('+1 hour'))->format('Y-m-d H:i:s');
+
         $userModel->saveResetToken($user['id'], $token, $expiry);
 
         $resetUrl = "http://localhost/App_SkillSwap/public/index.php?controller=auth&action=resetForm&token=$token";
@@ -124,12 +138,14 @@ class AuthController
         exit;
     }
 
+    // ✅ Mostrar formulario para nueva contraseña
     public function resetForm()
     {
         $token = $_GET['token'] ?? '';
         require __DIR__ . '/../../views/auth/reset_password.php';
     }
 
+    // ✅ Procesar el cambio de contraseña
     public function resetPassword()
     {
         $token = $_POST['token'] ?? '';

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
-
+require_once __DIR__ . '/../models/Skill.php';
 
 class UserController
 {
@@ -14,12 +14,12 @@ class UserController
     public function index()
     {
         $users = $this->userModel->getAll();
-       require_once __DIR__ . '/../../views/users/index.php';
+        require_once __DIR__ . '/../../views/users/index.php';
     }
 
     public function create()
     {
-      require_once __DIR__ . '/../../views/users/create.php';
+        require_once __DIR__ . '/../../views/users/create.php';
     }
 
     public function store()
@@ -30,7 +30,6 @@ class UserController
         $role = $_POST['role'] ?? 'standard';
 
         if ($name && $email && $password) {
-            // Verificar si ya existe un usuario con ese email
             if ($this->userModel->getByEmail($email)) {
                 echo "El correo ya está registrado.";
                 return;
@@ -46,32 +45,63 @@ class UserController
 
     public function edit()
     {
+        session_start();
         $id = $_GET['id'] ?? null;
-        if (!$id) {
-            die("ID no válido");
+
+        if (!$id || !isset($_SESSION['user_id']) || $_SESSION['user_id'] != $id) {
+            die("No autorizado.");
         }
 
         $user = $this->userModel->find($id);
+
         if (!$user) {
             die("Usuario no encontrado.");
         }
 
-    require_once __DIR__ . '/../../views/users/edit.php';
+        require __DIR__ . '/../../views/users/edit.php';
     }
 
     public function update()
     {
+        session_start();
         $id = $_POST['id'] ?? null;
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
-        $role = $_POST['role'] ?? 'standard';
+        $skill = $_POST['skill'] ?? '';
+        $about = $_POST['about'] ?? '';
 
-        if ($id && $name && $email) {
-            $this->userModel->update($id, $name, $email, $role);
-            header("Location: index.php?controller=user&action=index");
-        } else {
-            echo "Todos los campos son obligatorios.";
+        if (!$id || !isset($_SESSION['user_id']) || $_SESSION['user_id'] != $id) {
+            die("No autorizado.");
         }
+
+        // Subida de imagen
+        $photo = null;
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES['photo']['tmp_name'];
+            $originalName = basename($_FILES['photo']['name']);
+            $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            $newName = uniqid('user_') . '.' . $extension;
+            $destination = __DIR__ . '/../../public/img/' . $newName;
+
+            if (move_uploaded_file($tmpName, $destination)) {
+                $photo = $newName;
+            }
+        }
+
+        // Obtener datos actuales del usuario
+        $user = $this->userModel->find($id);
+
+        // Si no se subió nueva foto, conservar la existente
+        if (!$photo) {
+            $photo = $user['photo'] ?? null;
+        }
+
+        // Actualizar usuario
+        $this->userModel->update($id, $name, $email, $skill, $about, $photo);
+
+        // Redirigir al perfil actualizado
+        header("Location: index.php?controller=user&action=show&id=$id");
+        exit;
     }
 
     public function delete()
@@ -81,5 +111,20 @@ class UserController
             $this->userModel->delete($id);
         }
         header("Location: index.php?controller=user&action=index");
+    }
+
+    public function show()
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            die("ID no válido.");
+        }
+
+        $usuario = $this->userModel->find($id);
+        $skillModel = new Skill();
+        $skills = $skillModel->getByUser($id);
+
+        require __DIR__ . '/../../views/users/show.php';
     }
 }

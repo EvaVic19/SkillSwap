@@ -18,26 +18,21 @@ class User
     }
 
     // ✅ Crear un nuevo usuario
-    public function create($name, $email, $password, $role)
+
+    public function create($name, $email, $hashedPassword, $role = 'standard')
     {
         $stmt = $this->db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$name, $email, $password, $role]);
+        return $stmt->execute([$name, $email, $hashedPassword, $role]);
     }
 
     // ✅ Obtener usuario por ID
-    public function find($id)
-    {
-        $stmt = $this->db->prepare("SELECT id, name, email, role FROM users WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+   public function find($id)
+{
+    $stmt = $this->db->prepare("SELECT id, name, email, role, skill, about, photo FROM users WHERE id = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-    // ✅ Actualizar usuario
-    public function update($id, $name, $email, $role)
-    {
-        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?");
-        return $stmt->execute([$name, $email, $role, $id]);
-    }
 
     // ✅ Eliminar usuario
     public function delete($id)
@@ -82,4 +77,46 @@ class User
         $stmt = $this->db->prepare("UPDATE users SET reset_token = NULL, token_expiry = NULL WHERE id = ?");
         return $stmt->execute([$userId]);
     }
+
+    public static function buscarUsuarios($filtro = '')
+    {
+        $db = Database::connect();
+        $sql = "SELECT id, name, skill, photo FROM users WHERE role != 'admin'";
+
+        if (!empty($filtro)) {
+            $sql .= " AND skill LIKE :filtro";
+        }
+
+        $stmt = $db->prepare($sql);
+
+        if (!empty($filtro)) {
+            $stmt->bindValue(':filtro', '%' . $filtro . '%');
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function buscarPorId($id)
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("SELECT id, name, skill, about, photo FROM users WHERE id = :id AND role != 'admin'");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateProfile($id, $name, $email, $skill, $about)
+    {
+        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, skill = ?, about = ? WHERE id = ?");
+        return $stmt->execute([$name, $email, $skill, $about, $id]);
+    }
+
+    public function update($id, $name, $email, $skill, $about, $photo)
+{
+    $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, skill = ?, about = ?, photo = ? WHERE id = ?");
+    return $stmt->execute([$name, $email, $skill, $about, $photo, $id]);
+}
+
 }
