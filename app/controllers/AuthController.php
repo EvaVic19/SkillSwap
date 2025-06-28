@@ -42,10 +42,10 @@ class AuthController
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
-            $_SESSION['user_role'] = $user['role'] ?? 'standard';
+            $_SESSION['role'] = $user['role'] ?? 'standard';
 
             // ✅ Redirigir según el rol
-            if ($_SESSION['user_role'] === 'admin') {
+            if ($_SESSION['role'] === 'admin') {
                 header("Location: index.php?controller=admin&action=dashboard");
             } else {
                 header("Location: index.php?controller=home&action=index");

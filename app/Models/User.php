@@ -26,12 +26,12 @@ class User
     }
 
     // ✅ Obtener usuario por ID
-   public function find($id)
-{
-    $stmt = $this->db->prepare("SELECT id, name, email, role, skill, about, photo FROM users WHERE id = ?");
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    public function find($id)
+    {
+        $stmt = $this->db->prepare("SELECT id, name, email, role, skill, about, photo FROM users WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
 
     // ✅ Eliminar usuario
@@ -114,9 +114,14 @@ class User
     }
 
     public function update($id, $name, $email, $skill, $about, $photo)
-{
-    $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, skill = ?, about = ?, photo = ? WHERE id = ?");
-    return $stmt->execute([$name, $email, $skill, $about, $photo, $id]);
-}
+    {
+        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, skill = ?, about = ?, photo = ? WHERE id = ?");
+        return $stmt->execute([$name, $email, $skill, $about, $photo, $id]);
+    }
 
+    public function obtenerTodos()
+    {
+        $stmt = $this->db->query("SELECT * FROM users");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

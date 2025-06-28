@@ -5,7 +5,7 @@ class AdminController
     public function dashboard()
     {
         session_start();
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
             header("Location: index.php?controller=auth&action=showLogin");
             exit;
         }

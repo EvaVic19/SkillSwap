@@ -12,11 +12,11 @@ class Skill
     }
 
     public function getByUser($userId)
-{
-    $stmt = $this->db->prepare("SELECT * FROM skills WHERE user_id = ?");
-    $stmt->execute([$userId]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    {
+        $stmt = $this->db->prepare("SELECT * FROM skills WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
     public function find($id)
@@ -56,5 +56,11 @@ class Skill
     {
         $stmt = $this->db->prepare("DELETE FROM skills WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+
+    public function obtenerTodas()
+    {
+        $stmt = $this->db->query("SELECT * FROM skills");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
