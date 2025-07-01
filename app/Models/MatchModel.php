@@ -10,6 +10,20 @@ class MatchModel
         $this->db = Database::connect();
     }
 
+public function getAll()
+    {
+        $sql = "SELECT * FROM matches ORDER BY created_at DESC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function find($id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM matches WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     // Obtener todos los matches con nombres de habilidad y usuario
     public function obtenerTodos()
     {
