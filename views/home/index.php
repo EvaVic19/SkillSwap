@@ -9,7 +9,7 @@
         <input type="hidden" name="action" value="index">
         <div class="input-group">
             <input type="text" name="filtro" class="form-control" placeholder="Buscar una habilidad..." value="<?= htmlspecialchars($_GET['filtro'] ?? '') ?>">
-            <button class="btn btn-primary" type="submit">Buscar</button>
+            <button class="btn btn-outline-primary" type="submit">Buscar</button>
         </div>
     </form>
     <?php if (isset($_GET['filtro']) && empty($usuarios)): ?>

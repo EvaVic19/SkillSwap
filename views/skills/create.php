@@ -1,7 +1,7 @@
 <?php require_once __DIR__ . '/../shared/header.php'; ?> 
 
 <div class="container mt-5">
-    <h2>Añadir Nueva Habilidad</h2>
+    <h2 class="mb-4">Añadir Nueva Habilidad</h2>
 
     <form method="POST" action="index.php?controller=skill&action=store">
         <div class="mb-3">
@@ -38,8 +38,12 @@
             <input type="text" class="form-control" id="category" name="category" required>
         </div>
 
-        <button type="submit" class="btn btn-success">Guardar habilidad</button>
+        <div class="d-flex justify-content-start">
+            <button type="submit" class="btn btn-outline-info btn-sm">Guardar habilidad</button>
+            <a href="index.php?controller=skill&action=index" class="btn btn-outline-secondary btn-sm ms-2">← Cancelar</a>
+        </div>
     </form>
 </div>
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?> 
+<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+

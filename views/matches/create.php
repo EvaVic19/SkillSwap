@@ -38,8 +38,8 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="index.php?controller=Match&action=index" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-outline-primary">Guardar</button>
+        <a href="index.php?controller=Match&action=index" class="btn btn-outline-secondary">Cancelar</a>
     </form>
 </div>
 

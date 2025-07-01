@@ -2,8 +2,10 @@
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0"> Mis Habilidades</h2>
-        <a href="index.php?controller=skill&action=create" class="btn btn-success">➕ Añadir habilidad</a>
+        <h2 class="mb-0">Mis Habilidades</h2>
+        <a href="index.php?controller=skill&action=create" class="btn btn-outline-success">
+            Añadir habilidad
+        </a>
     </div>
 
     <?php if (!empty($skills)): ?>
@@ -26,19 +28,19 @@
                             <td class="text-start"><?= htmlspecialchars($skill['description']) ?></td>
                             <td><?= htmlspecialchars($skill['level']) ?></td>
                             <td>
-                                <span class="badge bg-<?= $skill['type'] === 'teach' ? 'primary' : 'info' ?>">
+                                <span class="text-<?= $skill['type'] === 'teach' ? 'primary' : 'info' ?> fw-semibold">
                                     <?= $skill['type'] === 'teach' ? 'Puede enseñar' : 'Quiere aprender' ?>
                                 </span>
                             </td>
                             <td><?= htmlspecialchars($skill['category']) ?></td>
                             <td>
                                 <a href="index.php?controller=skill&action=edit&id=<?= $skill['id'] ?>" class="btn btn-sm btn-outline-warning me-1">
-                                    ✏️ Editar
+                                    Editar
                                 </a>
                                 <a href="index.php?controller=skill&action=delete&id=<?= $skill['id'] ?>" 
                                    class="btn btn-sm btn-outline-danger"
                                    onclick="return confirm('¿Estás seguro de eliminar esta habilidad?')">
-                                   🗑️ Eliminar
+                                    Eliminar
                                 </a>
                             </td>
                         </tr>
@@ -54,5 +56,3 @@
 </div>
 
 <?php require_once __DIR__ . '/../shared/footer.php'; ?>
-
-

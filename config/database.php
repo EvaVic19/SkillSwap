@@ -26,5 +26,7 @@ class Database
             exit;
         }
     }
+
+    
 }
 

@@ -113,18 +113,62 @@ class UserController
         header("Location: index.php?controller=user&action=index");
     }
 
-    public function show()
-    {
-        $id = $_GET['id'] ?? null;
+public function show() 
+{
+    session_start();
 
-        if (!$id) {
-            die("ID no válido.");
-        }
+    $id = $_GET['id'] ?? null;
 
-        $usuario = $this->userModel->find($id);
-        $skillModel = new Skill();
-        $skills = $skillModel->getByUser($id);
-
-        require __DIR__ . '/../../views/users/show.php';
+    if (!$id) {
+        echo "<div class='alert alert-danger'>ID no válido.</div>";
+        return;
     }
+
+    $usuario = $this->userModel->find($id);
+
+    if (!$usuario) {
+        echo "<div class='alert alert-warning'>Usuario no encontrado.</div>";
+        return;
+    }
+
+    require_once __DIR__ . '/../models/Skill.php';
+    $skillModel = new Skill();
+    $skills = $skillModel->getByUser($id);
+
+    require __DIR__ . '/../../views/users/show.php';
+}
+public function contactar()
+{
+    session_start();
+
+    if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
+        echo "⚠️ No autorizado.";
+        return;
+    }
+
+    $sender_id = $_SESSION['user_id'];
+    $receiver_id = $_GET['id'];
+
+    require_once __DIR__ . '/../models/ContactRequest.php';
+    $contactModel = new ContactRequest();
+
+    if ($sender_id == $receiver_id) {
+        echo "<div class='alert alert-warning'>No puedes enviarte una solicitud a ti mismo.</div>";
+        return;
+    }
+
+    if ($contactModel->yaExiste($sender_id, $receiver_id)) {
+        echo "<div class='alert alert-info'>Ya has enviado una solicitud de contacto pendiente a este usuario.</div>";
+    } else {
+        if ($contactModel->crear($sender_id, $receiver_id)) {
+            echo "<div class='alert alert-success'>Solicitud de contacto enviada correctamente.</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error al enviar la solicitud.</div>";
+        }
+    }
+
+    echo '<a href="index.php?controller=user&action=show&id=' . $receiver_id . '" class="btn btn-outline-secondary mt-3">← Volver al perfil</a>';
+}
+
+
 }

@@ -92,12 +92,12 @@ public function obtenerPorUsuario($userId)
             m.created_at,
             s.user_id AS instructor_id,
             u.name AS instructor_name,
-            mu.id AS aprendiz_id,
-            mu.name AS aprendiz_name
+            mu.id AS matched_user_id,
+            mu.name AS matched_user_name
         FROM matches m
         JOIN skills s ON m.skill_id = s.id
-        JOIN users u ON s.user_id = u.id -- Instructor
-        JOIN users mu ON m.matched_user_id = mu.id -- Aprendiz
+        JOIN users u ON s.user_id = u.id               -- Instructor
+        JOIN users mu ON m.matched_user_id = mu.id     -- Usuario coincidente
         WHERE s.user_id = ? OR m.matched_user_id = ?
         ORDER BY m.created_at DESC
     ";

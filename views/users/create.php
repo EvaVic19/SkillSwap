@@ -10,7 +10,7 @@
             <option value="admin">Administrador</option>
             <option value="mentor">Mentor</option>
         </select>
-        <button class="btn btn-success">Guardar</button>
+        <button class="btn btn-outline-success">Guardar</button>
     </form>
 </div>
 <?php require_once __DIR__ . '/../shared/footer.php'; ?>

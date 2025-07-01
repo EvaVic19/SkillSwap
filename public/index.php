@@ -1,32 +1,29 @@
 <?php
-// Obtener el controlador y la acción desde la URL (GET)
-$controllerName = $_GET['controller'] ?? 'Home';     // Controlador por defecto
-$action = $_GET['action'] ?? 'index';                // Acción por defecto
+$controllerName = $_GET['controller'] ?? 'Home';
+$action = $_GET['action'] ?? 'index';
 
-// Construir el nombre de la clase del controlador
+// Si la acción viene por POST, también la aceptamos:
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controllerName = $_POST['controller'] ?? $controllerName;
+    $action = $_POST['action'] ?? $action;
+}
+
 $controllerClass = ucfirst($controllerName) . 'Controller';
-
-// Ruta al archivo del controlador
 $controllerFile = __DIR__ . '/../app/controllers/' . $controllerClass . '.php';
 
-// Verificar si el archivo del controlador existe
 if (file_exists($controllerFile)) {
     require_once $controllerFile;
 
-    // Verificar si la clase existe dentro del archivo
     if (class_exists($controllerClass)) {
         $controller = new $controllerClass();
 
-        // Verificar si el método (acción) existe en el controlador
         if (method_exists($controller, $action)) {
-            
-            // Si existe el parámetro 'id' en la URL, pasarlo como argumento
+            // Pasamos el parámetro id por GET (solo si existe)
             if (isset($_GET['id'])) {
                 $controller->$action($_GET['id']);
             } else {
                 $controller->$action();
             }
-
         } else {
             echo "❌ Acción '<strong>$action</strong>' no encontrada en el controlador '$controllerClass'.";
         }
@@ -36,4 +33,6 @@ if (file_exists($controllerFile)) {
 } else {
     echo "❌ Archivo del controlador '<strong>$controllerFile</strong>' no encontrado.";
 }
+
+
 

@@ -24,9 +24,9 @@
                         <td><?= $match['status'] ?></td>
                         <td><?= $match['created_at'] ?></td>
                         <td>
-                            <a href="index.php?controller=Match&action=edit&id=<?= $match['id'] ?>" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="index.php?controller=Match&action=delete&id=<?= $match['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este match?')">Eliminar</a>
-                            <a href="index.php?controller=Match&action=show&id=<?= $match['id'] ?>" class="btn btn-info btn-sm">Ver</a>
+                            <a href="index.php?controller=Match&action=edit&id=<?= $match['id'] ?>" class="btn btn-outline-warning btn-sm">Editar</a>
+                            <a href="index.php?controller=Match&action=delete&id=<?= $match['id'] ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Eliminar este match?')">Eliminar</a>
+                            <a href="index.php?controller=Match&action=show&id=<?= $match['id'] ?>" class="btn btn-outline-info btn-sm">Ver</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

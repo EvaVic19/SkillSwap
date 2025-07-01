@@ -37,7 +37,7 @@
             <input type="text" class="form-control" id="category" name="category" value="<?= htmlspecialchars($skill['category']) ?>">
         </div>
 
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <button type="submit" class="btn btn-outline-primary">Guardar cambios</button>
     </form>
 </div>
 
