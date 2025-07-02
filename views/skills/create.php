@@ -1,8 +1,12 @@
-<?php require_once __DIR__ . '/../shared/header.php'; ?> 
+<?php 
+// Include the shared header for the add new skill page
+require_once __DIR__ . '/../shared/header.php'; 
+?> 
 
 <div class="container mt-5">
     <h2 class="mb-4">Añadir Nueva Habilidad</h2>
 
+    <!-- Form to add a new skill: includes name, description, level, type, and category -->
     <form method="POST" action="index.php?controller=skill&action=store">
         <div class="mb-3">
             <label for="name" class="form-label">Nombre de la habilidad</label>
@@ -45,5 +49,9 @@
     </form>
 </div>
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+<?php 
+// Include the shared footer for the add new skill page
+require_once __DIR__ . '/../shared/footer.php'; 
+?>
+
 

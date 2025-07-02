@@ -1,135 +1,219 @@
-﻿# 🧠 SkillSwap – Plataforma de Intercambio de Habilidades
+﻿# SkillSwap – Skill Exchange Platform   
 
-SkillSwap es una aplicación web que permite a jóvenes compartir y aprender nuevas habilidades mediante un sistema de match. Los usuarios pueden registrarse, indicar qué habilidades quieren aprender y cuáles pueden enseñar, y conectarse con otros para hacer un intercambio de conocimientos.
+This project is a web application for connecting people who want to share and learn skills. SkillSwap allows users to register, create a profile, and publish what they can teach and what they want to learn. Through a friendly and dynamic interface, users can find matches and exchange knowledge.
 
----
+## Project Description
 
-## 📌 Tabla de Contenidos
-- [Descripción del Proyecto](#descripción-del-proyecto)
-- [Tecnologías Utilizadas](#tecnologías-utilizadas)
-- [Requisitos Funcionales](#requisitos-funcionales)
-- [Requisitos No Funcionales](#requisitos-no-funcionales)
-- [Mockup](#mockup)
-- [Modelo Entidad-Relación (ER)](#modelo-entidad-relación-er)
-- [Diagramas UML](#diagramas-uml)
-- [Estructura de Carpetas](#estructura-de-carpetas)
-- [Instalación y Despliegue](#instalación-y-despliegue)
-- [Autores](#autores)
+SkillSwap was created to foster collaborative learning. It works like a social learning network, where each user can be a teacher and a learner. The app supports skill posting, smart matching, and contact requests, all in a secure and structured environment.
 
----
+## User Roles
 
-## 📝 Descripción del Proyecto
+**Standard User:**
 
-SkillSwap permite a los usuarios:
-- Registrarse y autenticarse de forma segura.
-- Establecer su rol como estudiante o mentor.
-- Publicar habilidades que desean enseñar.
-- Buscar habilidades que desean aprender.
-- Hacer match con otros usuarios según intereses comunes.
-- Recuperar contraseña por correo.
-- Interactuar a través de una interfaz limpia y sencilla.
+* Can register and log in
+* Can publish skills to teach and learn
+* Can send and receive contact requests
+* Can view matches and accept/reject
 
----
+**Administrator:**
 
-## 🛠️ Tecnologías Utilizadas
+* Can access user and match listings
+* Can view all records
+* Has full access
 
-- PHP (programación backend)
-- MySQL (gestión de base de datos)
-- HTML + Bootstrap 5 (interfaz frontend)
-- SweetAlert (alertas elegantes)
-- Composer (gestión de dependencias)
-- PHPMailer (envío de correos)
-- MVC (Modelo-Vista-Controlador)
-- InfinityFree + FileZilla (despliegue gratuito)
-- Postman (pruebas API REST)
-- JWT (para autenticación en API REST) ✅ *en fase futura*
+## Table of Contents
 
----
+* Project Description
+* Technologies Used
+* Functional Requirements
+* Non-Functional Requirements
+* Use Cases
+* Mockup
+* Entity-Relationship Model (ER)
+* UML Diagrams
+* Folder Structure
+* Installation and Deployment
+* Author
 
-## ✅ Requisitos Funcionales
+## Technologies Used
 
-- Registro y login de usuarios.
-- Gestión de usuarios (CRUD).
-- Recuperación de contraseña por email.
-- Definición de habilidades.
-- Sistema de match entre habilidades.
-- Panel de administración (para usuarios con rol admin).
+* PHP (backend development)
+* MySQL (database management)
+* HTML + Bootstrap 5 (frontend interface)
+* SweetAlert (interactive alerts)
+* Composer (dependency management)
+* PHPMailer (email sending)
+* MVC (Model-View-Controller)
+* InfinityFree + FileZilla (free deployment)
+* Postman (REST API testing)
+* JWT (for REST API authentication) *future implementation*
 
----
+## Functional Requirements
 
-## 🚫 Requisitos No Funcionales
+1. **User registration**
+   Users can register as learners, instructors, or both.
 
-- Interfaz limpia y clara (UX amigable).
-- Seguridad básica con hash de contraseñas y tokens.
-- Validaciones en formularios.
-- Código organizado bajo patrón MVC.
-- Compatibilidad con navegadores modernos.
+2. **User login**
+   Registered users can log in with their email and password.
 
----
+3. **Profile management**
+   Users can edit their name, email, profile photo, and personal description.
 
-## 🎨 Mockup
+4. **Skill management (CRUD)**
+   Users can create, view, update, and delete their skills (to teach or to learn). Each skill includes:
 
-_(Agrega aquí una captura de tu diseño Figma o wireframe del sitio web)_
+   * Name
+   * Description
+   * Level (Basic, Intermediate, Advanced)
+   * Type (teach or learn)
+   * Category
+   * Creation date
 
----
+5. **View user profiles**
+   All registered users can view profiles and skills of other users.
 
-## 🧩 Modelo Entidad-Relación (ER)
+6. **Send contact requests**
+   Users can send a contact request to others based on skill compatibility.
 
-Base de datos: `skillswap`  
-Tablas:
-- `users` (id, name, email, password, role, reset_token, token_expiry)
-- `skills` (id, user_id, name, description)
-- `matches` (id, user1_id, user2_id, skill_id, status)
+7. **Match creation and status**
+   When two users have compatible teach/learn skills, a match is created.
+   Matches can be in one of the following states: `pending`, `accepted`, or `rejected`.
 
-_(Agrega aquí imagen del diagrama ER)_
+8. **Match management**
+   Users can view their own matches and update the match status.
+   Admins can view all matches.
 
----
+9. **Admin panel**
+   Admin users have access to full user and match listings.
 
-## 📊 Diagramas UML
+10. **Interactive alerts**
+    SweetAlert2 is used for user-friendly success and error messages.
 
-- Diagrama de Casos de Uso
-- Diagrama de Clases
-- Diagrama de Secuencia (opcional)
+11. **Security and permissions**
+    Only logged-in users can manage profiles, skills, and matches.
+    Only admins can access global user and match lists.
 
-_(Puedes hacerlos en draw.io, Lucidchart o Figma)_
+## Non-Functional Requirements
 
----
+1. **Responsiveness**
+   The platform must be responsive and usable on mobile, tablet, and desktop devices.
 
-## 📁 Estructura de Carpetas
+2. **Usability**
+   The interface should be intuitive and easy to navigate for users.
 
-App_SkillSwap/
+3. **Security**
+
+   * Passwords are hashed using a secure algorithm.
+   * Only authorized users can perform certain actions.
+
+4. **Performance**
+   The app must respond quickly (under 2 seconds for key actions).
+
+5. **Maintainability**
+   The system uses a clean MVC structure and separation of logic, views, and data.
+
+6. **Scalability**
+   The app is designed to support an increasing number of users, skills, and matches.
+
+7. **Accessibility**
+   Colors and layout were chosen to ensure good contrast and legibility.
+
+8. **Internationalization**
+   The system is structured to be easily translatable to other languages in the future.
+
+## Use Cases
+
+1. **User Registration**
+   The user accesses the registration form and provides their name, email, password, and role.
+
+2. **User Login**
+   A registered user logs into the system with email and password.
+
+3. **View and Edit Profile**
+   The user can view and update their personal information, upload a photo, and describe their background.
+
+4. **Add Skills**
+   Users can register skills they can teach or want to learn, specifying the name, description, level, type, and category.
+
+5. **Browse Other Users**
+   Users can browse profiles of other users to see their skills and background.
+
+6. **Send Contact Request**
+   A user can send a contact request to another user whose skills match their learning interest.
+
+7. **Accept or Reject Match**
+   Users can view and manage their match requests, accepting or rejecting them.
+
+8. **Manage Skills**
+   A logged-in user can edit or delete their skills from the system.
+
+9. **Admin Features**
+   Admin users can view all users and matches.
+
+## Mockup
+
+![Mockup](assets/mockup_skillswap.png)
+
+## Entity-Relationship Model (ER)
+
+Database: `skillswap`
+Tables:
+
+* `users` (id, name, email, password, role, reset\_token, token\_expiry)
+* `skills` (id, user\_id, name, description)
+* `matches` (id, user1\_id, user2\_id, skill\_id, status)
+
+![ERM Diagram](assets/er_skillswap.png)
+
+## UML Diagrams
+
+![Use Case Diagram](assets/use_case_diagram.png)
+![Class Diagram](assets/class_diagram.png)
+
+
+## Folder Structure
+
+APP\_SKILLSWAP/
 │
-├── app/
-│ ├── controllers/
-│ ├── models/
-│
-├── config/
-│ └── database.php
-│
-├── public/
-│ └── index.php
-│
-├── src/
-│ └── Services/
-│ └── MailService.php
-│
-├── views/
-│ ├── auth/
-│ ├── users/
-│ └── shared/
-│
-├── vendor/
-├── composer.json
-├── README.md
+├── api/                  → REST API handlers
+├── app/                  → Core application logic (controllers/models)
+├── config/               → Database and app configuration files
+├── public/               → Entry point (index.php)
+├── src/Services/         → Helper services (e.g., MailService)
+├── vendor/               → Composer dependencies
+├── phpmailer/            → External mailer library
+│   └── autoload.php
+├── views/                → HTML views organized by feature
+│   ├── admin/            → Admin dashboard
+│   ├── auth/             → Auth views (login, register, etc.)
+│   ├── contact/          → Contact request pages
+│   ├── home/             → Homepage
+│   ├── matches/          → Match management
+│   ├── shared/           → Header, footer, messages
+│   ├── skills/           → Skill CRUD views
+│   └── users/            → User profiles and admin views
+├── composer.json         → Composer configuration
+├── composer.lock         → Composer lock file
+└── README.md             → Project documentation
 
-## 🚀 Instalación y Despliegue
+## Installation and Deployment
 
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/tuusuario/SkillSwap.git
+To deploy the project using InfinityFree:
+
+1. **Create an account at [InfinityFree](https://infinityfree.net)**
+2. **Create a new hosting site and note your FTP credentials**
+3. **Download and install [FileZilla](https://filezilla-project.org/)**
+4. **Connect to your InfinityFree FTP using FileZilla**
+5. **Upload the contents of your project folder (especially /public, /app, /views, /config, etc.)**
+6. **Import your MySQL database to the InfinityFree database server via phpMyAdmin**
+7. **Update the database connection file (`config/database.php`) with your InfinityFree credentials**
+8. **Make sure your home route starts at `/public/index.php` or is routed properly**
+
+## Author
+https://github.com/EvaVic19/SkillSwap
+Eva Victoria Sánchez – Backend development, frontend design, and deployment
+
 
    
-   
-👩‍💻 Autor
-Victoria – Desarrollo completo del backend, interfaz y despliegue.
+
 

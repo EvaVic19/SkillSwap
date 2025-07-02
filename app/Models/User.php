@@ -7,25 +7,25 @@ class User
 
     public function __construct()
     {
+        // Initialize the database connection
         $this->db = Database::connect();
     }
 
-    // ✅ Obtener todos los usuarios
+    // ✅ Get all users (basic info)
     public function getAll()
     {
         $stmt = $this->db->query("SELECT id, name, email, role FROM users");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // ✅ Crear un nuevo usuario
-
+    // ✅ Create a new user
     public function create($name, $email, $hashedPassword, $role = 'standard')
     {
         $stmt = $this->db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
         return $stmt->execute([$name, $email, $hashedPassword, $role]);
     }
 
-    // ✅ Obtener usuario por ID
+    // ✅ Get a user by ID (detailed info)
     public function find($id)
     {
         $stmt = $this->db->prepare("SELECT id, name, email, role, skill, about, photo FROM users WHERE id = ?");
@@ -33,15 +33,14 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-    // ✅ Eliminar usuario
+    // ✅ Delete a user by ID
     public function delete($id)
     {
         $stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
-    // ✅ Obtener usuario por correo (para login o recuperación)
+    // ✅ Get a user by email (for login or password recovery)
     public function getByEmail($email)
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
@@ -49,14 +48,14 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // ✅ Guardar token de recuperación
+    // ✅ Save password reset token and its expiry
     public function saveResetToken($userId, $token, $expiry)
     {
         $stmt = $this->db->prepare("UPDATE users SET reset_token = ?, token_expiry = ? WHERE id = ?");
         return $stmt->execute([$token, $expiry, $userId]);
     }
 
-    // ✅ Buscar por token
+    // ✅ Find a user by password reset token
     public function findByToken($token)
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE reset_token = ?");
@@ -64,20 +63,21 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // ✅ Actualizar contraseña
+    // ✅ Update user's password
     public function updatePassword($userId, $newHashedPassword)
     {
         $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE id = ?");
         return $stmt->execute([$newHashedPassword, $userId]);
     }
 
-    // ✅ Borrar token de recuperación
+    // ✅ Clear password reset token and expiry
     public function clearResetToken($userId)
     {
         $stmt = $this->db->prepare("UPDATE users SET reset_token = NULL, token_expiry = NULL WHERE id = ?");
         return $stmt->execute([$userId]);
     }
 
+    // Search users by skill (excluding admins)
     public static function buscarUsuarios($filtro = '')
     {
         $db = Database::connect();
@@ -97,6 +97,7 @@ class User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Search a user by ID (excluding admins)
     public static function buscarPorId($id)
     {
         $db = Database::connect();
@@ -107,18 +108,21 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Update basic user profile info
     public function updateProfile($id, $name, $email, $skill, $about)
     {
         $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, skill = ?, about = ? WHERE id = ?");
         return $stmt->execute([$name, $email, $skill, $about, $id]);
     }
 
+    // Update user info including photo
     public function update($id, $name, $email, $skill, $about, $photo)
     {
         $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, skill = ?, about = ?, photo = ? WHERE id = ?");
         return $stmt->execute([$name, $email, $skill, $about, $photo, $id]);
     }
 
+    // Get all users (full info)
     public function obtenerTodos()
     {
         $stmt = $this->db->query("SELECT * FROM users");

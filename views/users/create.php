@@ -1,6 +1,10 @@
-<?php require_once __DIR__ . '/../shared/header.php'; ?>
+<?php 
+// Include the shared header for the new user registration page
+require_once __DIR__ . '/../shared/header.php'; 
+?>
 <div class="container mt-5">
     <h2>Registrar nuevo usuario</h2>
+    <!-- Form to register a new user: includes name, email, password, and role -->
     <form action="index.php?controller=user&action=store" method="POST">
         <input name="name" class="form-control mb-2" placeholder="Nombre" required>
         <input name="email" class="form-control mb-2" type="email" placeholder="Email" required>
@@ -13,4 +17,8 @@
         <button class="btn btn-outline-success">Guardar</button>
     </form>
 </div>
-<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+<?php 
+// Include the shared footer for the new user registration page
+require_once __DIR__ . '/../shared/footer.php'; 
+?>
+

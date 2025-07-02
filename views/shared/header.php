@@ -1,4 +1,5 @@
 <?php 
+// Start session if it hasn't been started yet
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -9,36 +10,38 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <title>SkillSwap</title>
+    <!-- Import Bootstrap CSS for responsive design and styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
+<!-- Navigation bar for the application -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
-        <!-- Logo + texto -->
+        <!-- Logo and brand text -->
         <a class="navbar-brand d-flex align-items-center" href="index.php">
             <img src="img/Lg.Skillswap.png" alt="Logo" class="me-2" width="80" height="80">
             <span class="fw-bold fs-4 text-white">SkillSwap</span>
         </a>
 
-        <!-- Botón responsive -->
+        <!-- Responsive navbar toggle button -->
         <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Enlaces del navbar -->
+        <!-- Navbar links -->
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav ms-auto">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     
-                    <!-- Saludo con nombre -->
+                    <!-- Greeting with the user's name -->
                     <?php if (isset($_SESSION['user_name'])): ?>
                         <li class="nav-item">
                             <span class="nav-link text-white">Hola, <?= htmlspecialchars($_SESSION['user_name']) ?></span>
                         </li>
                     <?php endif; ?>
 
-                    <!-- Enlaces comunes a todos los usuarios -->
+                    <!-- Links available to all authenticated users -->
                     <li class="nav-item">
                         <a class="nav-link text-white link-warning" href="index.php?controller=user&action=show&id=<?= $_SESSION['user_id'] ?>">Mi perfil</a>
                     </li>
@@ -49,7 +52,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         <a class="nav-link text-white link-warning" href="index.php?controller=match&action=misMatches">Mis Matches</a>
                     </li>
 
-                    <!-- Solo para administradores -->
+                    <!-- Admin-only links -->
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                         <li class="nav-item">
                             <a class="nav-link text-white link-warning" href="index.php?controller=user&action=index">Usuarios</a>
@@ -59,13 +62,13 @@ if (session_status() === PHP_SESSION_NONE) {
                         </li>
                     <?php endif; ?>
 
-                    <!-- Cerrar sesión -->
+                    <!-- Logout link -->
                     <li class="nav-item">
                         <a class="nav-link text-white link-warning" href="index.php?controller=auth&action=logout">Cerrar sesión</a>
                     </li>
 
                 <?php else: ?>
-                    <!-- Usuarios no autenticados -->
+                    <!-- Links for unauthenticated users -->
                     <li class="nav-item">
                         <a class="nav-link text-white link-warning" href="index.php?controller=user&action=create">Registrarse</a>
                     </li>
@@ -78,5 +81,35 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
 </nav>
 
+<!-- SweetAlert2 custom alerts script -->
+<script src="public/js/sweetalert.js"></script>
 
+<!-- Show success alert if the request was sent successfully -->
+<?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+<script>
+  mostrarAlertaExito("¡Solicitud enviada correctamente!");
+</script>
+<?php endif; ?>
+
+<!-- Show error alerts based on different error types -->
+<?php if (isset($_GET['error']) && $_GET['error'] == 'self'): ?>
+<script>
+  mostrarAlertaError("No puedes enviarte una solicitud a ti misma.");
+</script>
+<?php elseif (isset($_GET['error']) && $_GET['error'] == 'db'): ?>
+<script>
+  mostrarAlertaError("Hubo un error al enviar la solicitud.");
+</script>
+<?php elseif (isset($_GET['error'])): ?>
+<script>
+  mostrarAlertaError("Acción no autorizada.");
+</script>
+<?php endif; ?>
+
+<!-- Show info alert if a request already exists -->
+<?php if (isset($_GET['info']) && $_GET['info'] == 'exists'): ?>
+<script>
+  mostrarAlertaError("Ya enviaste una solicitud a esta persona.");
+</script>
+<?php endif; ?>
 

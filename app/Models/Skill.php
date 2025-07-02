@@ -1,16 +1,17 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 
-
 class Skill
 {
     private $db;
 
     public function __construct()
     {
+        // Initialize the database connection
         $this->db = Database::connect();
     }
 
+    // Get all skills for a specific user
     public function getByUser($userId)
     {
         $stmt = $this->db->prepare("SELECT * FROM skills WHERE user_id = ?");
@@ -18,7 +19,7 @@ class Skill
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
+    // Find a skill by its ID
     public function find($id)
     {
         $stmt = $this->db->prepare("SELECT * FROM skills WHERE id = ?");
@@ -26,6 +27,7 @@ class Skill
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Create a new skill with the provided data
     public function create($data)
     {
         $stmt = $this->db->prepare("INSERT INTO skills (user_id, name, description, level, type, category) VALUES (?, ?, ?, ?, ?, ?)");
@@ -39,6 +41,7 @@ class Skill
         ]);
     }
 
+    // Update an existing skill with new data
     public function update($id, $data)
     {
         $stmt = $this->db->prepare("UPDATE skills SET name = ?, description = ?, level = ?, type = ?, category = ? WHERE id = ?");
@@ -52,15 +55,18 @@ class Skill
         ]);
     }
 
+    // Delete a skill by its ID
     public function delete($id)
     {
         $stmt = $this->db->prepare("DELETE FROM skills WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
+    // Get all skills in the database
     public function obtenerTodas()
     {
         $stmt = $this->db->query("SELECT * FROM skills");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+

@@ -1,8 +1,13 @@
-<?php require_once __DIR__ . '/../shared/header.php'; ?>
+<?php 
+// Include the shared header for the edit profile page
+require_once __DIR__ . '/../shared/header.php'; 
+?>
 
 <div class="container mt-5">
     <h2>Editar Perfil</h2>
+    <!-- Form to edit the user's profile: allows updating name, email, main skill, about, and profile photo -->
     <form method="POST" action="index.php?controller=user&action=update" enctype="multipart/form-data">
+        <!-- Hidden input to pass the user ID -->
         <input type="hidden" name="id" value="<?= $user['id'] ?>">
 
         <div class="mb-3">
@@ -29,6 +34,7 @@
             <label for="photo" class="form-label">Foto de perfil</label>
             <input type="file" class="form-control" id="photo" name="photo">
             <?php
+                // Determine the current profile photo or use a default image
                 $foto = !empty($user['photo']) ? 'img/' . $user['photo'] : 'img/UserP.jpg';
             ?>
             <div class="mt-2">
@@ -40,6 +46,10 @@
     </form>
 </div>
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+<?php 
+// Include the shared footer for the edit profile page
+require_once __DIR__ . '/../shared/footer.php'; 
+?>
+
 
 

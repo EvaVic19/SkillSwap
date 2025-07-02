@@ -7,6 +7,7 @@ require_once __DIR__ . '/../models/User.php';
 
 class AuthController
 {
+    // Start session safely if not already started
     private function safeSessionStart()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -14,7 +15,7 @@ class AuthController
         }
     }
 
-    // ✅ Mostrar formulario de login
+    // ✅ Show login form
     public function showLogin()
     {
         $this->safeSessionStart();
@@ -22,7 +23,7 @@ class AuthController
         require __DIR__ . '/../../views/auth/login.php';
     }
 
-    // ✅ Procesar login con redirección por rol
+    // ✅ Process login and redirect based on user role
     public function login()
     {
         $this->safeSessionStart();
@@ -30,6 +31,7 @@ class AuthController
         $password = $_POST['password'] ?? '';
         $error = '';
 
+        // Validate required fields
         if (!$email || !$password) {
             $error = 'Correo y contraseña son obligatorios.';
             require __DIR__ . '/../../views/auth/login.php';
@@ -39,12 +41,13 @@ class AuthController
         $userModel = new User();
         $user = $userModel->getByEmail($email);
 
+        // Check credentials
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['role'] = $user['role'] ?? 'standard';
 
-            // ✅ Redirigir según el rol
+            // ✅ Redirect according to user role
             if ($_SESSION['role'] === 'admin') {
                 header("Location: index.php?controller=admin&action=dashboard");
             } else {
@@ -57,13 +60,14 @@ class AuthController
         }
     }
 
-    // ✅ Cerrar sesión
+    // ✅ Logout and destroy session
     public function logout()
     {
         $this->safeSessionStart();
         session_unset();
         session_destroy();
 
+        // Remove session cookie if set
         if (ini_get("session.use_cookies")) {
             setcookie(session_name(), '', time() - 42000, '/');
         }
@@ -72,13 +76,13 @@ class AuthController
         exit;
     }
 
-    // ✅ Mostrar formulario de recuperación
+    // ✅ Show forgot password form
     public function forgotPassword()
     {
         require __DIR__ . '/../../views/auth/forgot_password.php';
     }
 
-    // ✅ Enviar email con enlace de recuperación
+    // ✅ Send password reset email with token
     public function sendResetEmail()
     {
         date_default_timezone_set('America/Bogota');
@@ -95,11 +99,14 @@ class AuthController
             die("Usuario no encontrado");
         }
 
+        // Generate reset token and expiry
         $token = bin2hex(random_bytes(16));
         $expiry = (new DateTime('+1 hour'))->format('Y-m-d H:i:s');
 
+        // Save token and expiry in database
         $userModel->saveResetToken($user['id'], $token, $expiry);
 
+        // Build reset URL and email content
         $resetUrl = "http://localhost/App_SkillSwap/public/index.php?controller=auth&action=resetForm&token=$token";
 
         $resetLink = "
@@ -120,6 +127,7 @@ class AuthController
         ";
 
         try {
+            // Send the email using the MailService
             require_once __DIR__ . '/../../src/Services/MailService.php';
             $mailer = new MailService();
             $mailer->send($email, $user['name'], $subject, $body);
@@ -134,18 +142,19 @@ class AuthController
             $redirectUrl = "index.php?controller=auth&action=forgotPassword";
         }
 
+        // Show message view with success or error
         require __DIR__ . '/../../views/shared/message.php';
         exit;
     }
 
-    // ✅ Mostrar formulario para nueva contraseña
+    // Show reset password form
     public function resetForm()
     {
         $token = $_GET['token'] ?? '';
         require __DIR__ . '/../../views/auth/reset_password.php';
     }
 
-    // ✅ Procesar el cambio de contraseña
+    // Process password reset with token
     public function resetPassword()
     {
         $token = $_POST['token'] ?? '';
@@ -154,6 +163,7 @@ class AuthController
         $userModel = new User();
         $user = $userModel->findByToken($token);
 
+        // Validate token and expiry
         if (!$user || strtotime($user['token_expiry']) < time()) {
             $type = "danger";
             $message = "Token inválido o expirado.";
@@ -162,6 +172,7 @@ class AuthController
             exit;
         }
 
+        // Update user password and clear token
         $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
         $userModel->updatePassword($user['id'], $hashed);
         $userModel->clearResetToken($user['id']);
@@ -173,3 +184,4 @@ class AuthController
         exit;
     }
 }
+

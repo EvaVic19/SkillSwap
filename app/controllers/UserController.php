@@ -8,33 +8,39 @@ class UserController
 
     public function __construct()
     {
+        // Initialize the User model
         $this->userModel = new User();
     }
 
     public function index()
     {
+        // Retrieve all users and load the users list view
         $users = $this->userModel->getAll();
         require_once __DIR__ . '/../../views/users/index.php';
     }
 
     public function create()
     {
+        // Load the user creation form view
         require_once __DIR__ . '/../../views/users/create.php';
     }
 
     public function store()
     {
+        // Handle the registration of a new user
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $role = $_POST['role'] ?? 'standard';
 
         if ($name && $email && $password) {
+            // Check if the email is already registered
             if ($this->userModel->getByEmail($email)) {
                 echo "El correo ya está registrado.";
                 return;
             }
 
+            // Hash the password and create the user
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             $this->userModel->create($name, $email, $hashed, $role);
             header("Location: index.php?controller=user&action=index");
@@ -45,6 +51,7 @@ class UserController
 
     public function edit()
     {
+        // Load the user edit form, only if the session user matches the ID
         session_start();
         $id = $_GET['id'] ?? null;
 
@@ -63,6 +70,7 @@ class UserController
 
     public function update()
     {
+        // Handle the update of user profile data
         session_start();
         $id = $_POST['id'] ?? null;
         $name = $_POST['name'] ?? '';
@@ -74,7 +82,7 @@ class UserController
             die("No autorizado.");
         }
 
-        // Subida de imagen
+        // Handle profile photo upload
         $photo = null;
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
             $tmpName = $_FILES['photo']['tmp_name'];
@@ -88,24 +96,25 @@ class UserController
             }
         }
 
-        // Obtener datos actuales del usuario
+        // Get current user data
         $user = $this->userModel->find($id);
 
-        // Si no se subió nueva foto, conservar la existente
+        // Keep the existing photo if a new one was not uploaded
         if (!$photo) {
             $photo = $user['photo'] ?? null;
         }
 
-        // Actualizar usuario
+        // Update user data in the database
         $this->userModel->update($id, $name, $email, $skill, $about, $photo);
 
-        // Redirigir al perfil actualizado
+        // Redirect to the updated user profile
         header("Location: index.php?controller=user&action=show&id=$id");
         exit;
     }
 
     public function delete()
     {
+        // Delete a user by ID and redirect to the users list
         $id = $_GET['id'] ?? null;
         if ($id) {
             $this->userModel->delete($id);
@@ -113,62 +122,65 @@ class UserController
         header("Location: index.php?controller=user&action=index");
     }
 
-public function show() 
-{
-    session_start();
+    public function show()
+    {
+        // Display the public profile of a user by ID
+        session_start();
 
-    $id = $_GET['id'] ?? null;
+        $id = $_GET['id'] ?? null;
 
-    if (!$id) {
-        echo "<div class='alert alert-danger'>ID no válido.</div>";
-        return;
+        if (!$id) {
+            echo "<div class='alert alert-danger'>ID no válido.</div>";
+            return;
+        }
+
+        $usuario = $this->userModel->find($id);
+
+        if (!$usuario) {
+            echo "<div class='alert alert-warning'>Usuario no encontrado.</div>";
+            return;
+        }
+
+        require_once __DIR__ . '/../models/Skill.php';
+        $skillModel = new Skill();
+        $skills = $skillModel->getByUser($id);
+
+        require __DIR__ . '/../../views/users/show.php';
     }
 
-    $usuario = $this->userModel->find($id);
+    public function contactar()
+    {
+        // Handle the process of sending a contact request to another user
+        if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
+            header("Location: index.php?controller=user&action=show&id=" . ($_GET['id'] ?? '') . "&error=unauthorized");
+            exit;
+        }
 
-    if (!$usuario) {
-        echo "<div class='alert alert-warning'>Usuario no encontrado.</div>";
-        return;
-    }
+        $sender_id = $_SESSION['user_id'];
+        $receiver_id = $_GET['id'];
 
-    require_once __DIR__ . '/../models/Skill.php';
-    $skillModel = new Skill();
-    $skills = $skillModel->getByUser($id);
+        // Prevent sending a request to oneself
+        if ($sender_id == $receiver_id) {
+            header("Location: index.php?controller=user&action=show&id=$receiver_id&error=self");
+            exit;
+        }
 
-    require __DIR__ . '/../../views/users/show.php';
-}
-public function contactar()
-{
-    session_start();
+        require_once __DIR__ . '/../models/ContactRequest.php';
+        $contactModel = new ContactRequest();
 
-    if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
-        echo "⚠️ No autorizado.";
-        return;
-    }
+        // Check if a request already exists between these users
+        if ($contactModel->yaExiste($sender_id, $receiver_id)) {
+            header("Location: index.php?controller=user&action=show&id=$receiver_id&info=exists");
+            exit;
+        }
 
-    $sender_id = $_SESSION['user_id'];
-    $receiver_id = $_GET['id'];
-
-    require_once __DIR__ . '/../models/ContactRequest.php';
-    $contactModel = new ContactRequest();
-
-    if ($sender_id == $receiver_id) {
-        echo "<div class='alert alert-warning'>No puedes enviarte una solicitud a ti mismo.</div>";
-        return;
-    }
-
-    if ($contactModel->yaExiste($sender_id, $receiver_id)) {
-        echo "<div class='alert alert-info'>Ya has enviado una solicitud de contacto pendiente a este usuario.</div>";
-    } else {
+        // Create the contact request and redirect with success or error message
         if ($contactModel->crear($sender_id, $receiver_id)) {
-            echo "<div class='alert alert-success'>Solicitud de contacto enviada correctamente.</div>";
+            header("Location: index.php?controller=user&action=show&id=$receiver_id&success=1");
+            exit;
         } else {
-            echo "<div class='alert alert-danger'>Error al enviar la solicitud.</div>";
+            header("Location: index.php?controller=user&action=show&id=$receiver_id&error=db");
+            exit;
         }
     }
-
-    echo '<a href="index.php?controller=user&action=show&id=' . $receiver_id . '" class="btn btn-outline-secondary mt-3">← Volver al perfil</a>';
-}
-
-
 }

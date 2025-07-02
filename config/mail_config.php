@@ -2,22 +2,22 @@
 
 return [
 
-    // Servidor SMTP
+    // SMTP server address
     'host' => 'smtp.gmail.com',
 
-    // Correo que enviará los mensajes (debe estar autenticado)
+    // Email address used to send messages (must be authenticated)
     'username' => 'evicfulls@gmail.com',
 
-    // Clave de aplicación generada desde Gmail
+    // Application-specific password generated from Gmail
     'password' => 'gzfxkxezmavvtrjk',
 
-    // Remitente visible en el correo
+    // Sender information visible in the email
     'from_email' => 'evicfulls@gmail.com',
     'from_name' => 'SkillSwap',
 
-    // Puerto SMTP (587 = STARTTLS)
+    // SMTP port (587 = STARTTLS)
     'port' => 587,
 
-    // Método de cifrado
+    // Encryption method
     'secure' => 'tls',
 ];

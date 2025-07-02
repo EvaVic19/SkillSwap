@@ -1,18 +1,22 @@
-<?php require_once __DIR__ . '/../shared/header.php'; ?>
+<?php 
+// Include the shared header for the user profile page
+require_once __DIR__ . '/../shared/header.php'; 
+?>
 
 <div class="container my-5">
     <div class="card shadow-lg p-4">
         <div class="row g-4 align-items-center">
 
-            <!-- Foto de perfil en círculo -->
+            <!-- Circular profile photo -->
             <div class="col-md-3 text-center">
                 <?php
+                // Determine the user's profile photo or use a default image
                 $foto = !empty($usuario['photo']) ? 'img/' . $usuario['photo'] : 'img/UserP.jpg';
                 ?>
                 <img src="<?= htmlspecialchars($foto) ?>" alt="Foto de perfil" class="rounded-circle shadow" style="width: 140px; height: 140px; object-fit: cover;">
             </div>
 
-            <!-- Datos del usuario -->
+            <!-- User data section -->
             <div class="col-md-9">
                 <h2 class="fw-semibold mb-3"><?= htmlspecialchars($usuario['name']) ?></h2>
 
@@ -21,7 +25,7 @@
                     <?= !empty($usuario['about']) ? nl2br(htmlspecialchars($usuario['about'])) : '<span class="text-muted">Este usuario aún no ha agregado una descripción.</span>' ?>
                 </p>
 
-                <!-- Habilidades que puede enseñar -->
+                <!-- Skills the user can teach -->
                 <div class="mb-3">
                     <h5 class="text-secondary fw-bold"> Habilidades que puede enseñar</h5>
                     <?php
@@ -41,7 +45,7 @@
                     <?php endif; ?>
                 </div>
 
-                <!-- Habilidades que quiere aprender -->
+                <!-- Skills the user wants to learn -->
                 <div class="mb-4">
                     <h5 class="text-secondary fw-bold"> Habilidades que quiere aprender</h5>
                     <?php
@@ -61,11 +65,12 @@
                     <?php endif; ?>
                 </div>
 
-                <!-- Botones -->
+                <!-- Action buttons: contact, edit profile, manage skills, view requests -->
                 <div class="d-flex gap-2 align-items-center flex-wrap flex-row">
 
                     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== $usuario['id']): ?>
 
+                        <!-- Contact button: only for other users -->
                         <form method="POST" class="d-inline">
                             <input type="hidden" name="controller" value="contact">
                             <input type="hidden" name="action" value="sendRequest">
@@ -76,10 +81,11 @@
                     <?php endif; ?>
 
                     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $usuario['id']): ?>
+                        <!-- Edit profile and manage skills buttons: only for the profile owner -->
                         <a href="index.php?controller=user&action=edit&id=<?= $usuario['id'] ?>" class="btn btn-outline-warning">Editar perfil</a>
                         <a href="index.php?controller=skill&action=index" class="btn btn-outline-info">Gestionar habilidades</a>
                     <?php endif; ?>
-                    <!-- Botón Ver solicitudes -->
+                    <!-- Button to view contact requests -->
                     <a href="index.php?controller=contact&action=misSolicitudes" class="btn btn-outline-info btn-sm">Ver solicitudes</a>
                 </div>
             </div>
@@ -89,4 +95,7 @@
 </div>
 </div>
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+<?php 
+// Include the shared footer for the user profile page
+require_once __DIR__ . '/../shared/footer.php'; 
+?>

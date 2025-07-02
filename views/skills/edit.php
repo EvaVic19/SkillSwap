@@ -1,8 +1,13 @@
-<?php require_once __DIR__ . '/../shared/header.php'; ?> 
+<?php 
+// Include the shared header for the edit skill page
+require_once __DIR__ . '/../shared/header.php'; 
+?> 
 
 <div class="container mt-5">
     <h2>Editar Habilidad</h2>
+    <!-- Form to edit an existing skill: fields are pre-filled with current skill data -->
     <form method="POST" action="index.php?controller=skill&action=update">
+        <!-- Hidden input to pass the skill ID -->
         <input type="hidden" name="id" value="<?= $skill['id'] ?>">
 
         <div class="mb-3">
@@ -41,5 +46,9 @@
     </form>
 </div>
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?> 
+<?php 
+// Include the shared footer for the edit skill page
+require_once __DIR__ . '/../shared/footer.php'; 
+?>
+
 

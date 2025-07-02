@@ -5,7 +5,7 @@ try {
     $mailer = new MailService();
 
     $correoDestino = 'evicfulls@gmail.com'; 
-    $nombreDestino = 'Victoria';           // <--- opcional
+    $nombreDestino = 'Victoria';           
     $asunto = 'Correo de prueba desde App_SkillSwap';
     $cuerpo = '<p>Hola Victoria, este es un <strong>correo de prueba</strong> enviado con PHPMailer desde tu app.</p>';
 
