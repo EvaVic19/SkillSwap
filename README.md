@@ -210,6 +210,8 @@ To deploy the project using InfinityFree:
 8. **Make sure your home route starts at `/public/index.php` or is routed properly**
 
 ## Author
+admin vic@gmail.com 
+password 5678V
 https://github.com/EvaVic19/SkillSwap
 Eva Victoria Sánchez – Backend development, frontend design, and deployment
 
